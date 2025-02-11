@@ -1,10 +1,13 @@
 import React, { useState } from 'react';
+import { Routes, Route, useLocation } from 'react-router-dom';
 import { Home, Building2, Users2, Phone, HelpCircle, ChevronRight, MapPin, Instagram, Facebook, Twitter } from 'lucide-react';
 import PropertyCard from './components/PropertyCard';
+import PropertyDetails from './pages/PropertyDetails';
 import { properties } from './data/properties';
 
 function App() {
   const [activeSection, setActiveSection] = useState('home');
+  const location = useLocation();
 
   const scrollToSection = (sectionId: string) => {
     setActiveSection(sectionId);
@@ -12,33 +15,8 @@ function App() {
     element?.scrollIntoView({ behavior: 'smooth' });
   };
 
-  return (
-    <div className="min-h-screen bg-white">
-      {/* Navigation */}
-      <nav className="fixed top-0 w-full bg-white/80 backdrop-blur-md z-50 border-b border-gray-100">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between h-16 items-center">
-            <div className="flex items-center">
-              <Building2 className="h-8 w-8 text-gray-900" />
-              <span className="ml-2 text-xl font-semibold">Rangeli Homes</span>
-            </div>
-            <div className="hidden md:flex space-x-8">
-              {['home', 'about', 'portfolio', 'why-us', 'faq', 'contact'].map((section) => (
-                <button
-                  key={section}
-                  onClick={() => scrollToSection(section)}
-                  className={`${
-                    activeSection === section ? 'text-gray-900' : 'text-gray-500'
-                  } hover:text-gray-900 px-3 py-2 text-sm font-medium transition-colors`}
-                >
-                  {section.charAt(0).toUpperCase() + section.slice(1).replace('-', ' ')}
-                </button>
-              ))}
-            </div>
-          </div>
-        </div>
-      </nav>
-
+  const HomePage = () => (
+    <>
       {/* Hero Section */}
       <section id="home" className="pt-32 pb-20 px-4">
         <div className="max-w-7xl mx-auto text-center">
@@ -251,6 +229,42 @@ function App() {
           </div>
         </div>
       </footer>
+    </>
+  );
+
+  return (
+    <div className="min-h-screen bg-white">
+      {/* Navigation */}
+      <nav className="fixed top-0 w-full bg-white/80 backdrop-blur-md z-50 border-b border-gray-100">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between h-16 items-center">
+            <div className="flex items-center">
+              <Building2 className="h-8 w-8 text-gray-900" />
+              <span className="ml-2 text-xl font-semibold">Rangeli Homes</span>
+            </div>
+            {location.pathname === '/' && (
+              <div className="hidden md:flex space-x-8">
+                {['home', 'about', 'portfolio', 'why-us', 'faq', 'contact'].map((section) => (
+                  <button
+                    key={section}
+                    onClick={() => scrollToSection(section)}
+                    className={`${
+                      activeSection === section ? 'text-gray-900' : 'text-gray-500'
+                    } hover:text-gray-900 px-3 py-2 text-sm font-medium transition-colors`}
+                  >
+                    {section.charAt(0).toUpperCase() + section.slice(1).replace('-', ' ')}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+      </nav>
+
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/property/:id" element={<PropertyDetails />} />
+      </Routes>
     </div>
   );
 }
